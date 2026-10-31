@@ -29,7 +29,7 @@
 ### 프로젝트 구조
 - 엔진: UE 5.8 런처 빌드 (`C:\Program Files\Epic Games\UE_5.8`). MCP 서버 `unreal` = `http://127.0.0.1:8010/mcp`, 에디터 시작 시 자동 시작(`Config/DefaultEditorPerProjectUserSettings.ini`)
 - 빌드: 헤더가 바뀌면 에디터를 닫고 `Engine\Build\BatchFiles\Build.bat NPCProjectEditor Win64 Development -Project="<uproject>" -WaitMutex -NoHotReload`
-- 주요 레벨: `/Game/Maps/L_MerchantCamp` (기본 맵). 닫힌 상자형 숲속 야영지 20m×20m(벽 안쪽 x,y=±1000, 캐노피 천장 Z=600). PlayerStart (-700,0,100) yaw 0, 상인 (320,160,96) yaw 180, 모닥불 (100,0,0) + PointLight, PostProcess 노출 EV100 0 고정. 메시 액터는 스케일 100(아래 FBX 주의)
+- 주요 레벨: `/Game/Maps/L_MerchantCamp` (기본 맵). 닫힌 상자형 숲속 야영지 20m×20m(벽 안쪽 x,y=±1000, 천장은 밤하늘 돔 SM_Camp_SkyDome (0,0,550), 별은 M_Camp_Star 발광). 랜턴 기둥 (480,260) + PointLight. PlayerStart (-700,0,100) yaw 0, 상인 (320,160,96) yaw 180, 모닥불 (100,0,0) + PointLight, PostProcess 노출 EV100 0 고정. 메시 액터는 스케일 100(아래 FBX 주의)
   - `/Game/Maps/L_TestField`: 처음 테스트 맵 (Template_Default 복제)
 - 게임모드: `/Game/Blueprints/Game/BP_NPCGameMode` (Pawn `BP_PlayerCharacter`, Controller `BP_PlayerController`)
 - C++ (`Source/NPCProject/`, 모듈 루트 기준 include)
@@ -46,7 +46,7 @@
   - `/Game/Dialogue/DA_Dialogue_Merchant` (Start → Greet[선택지 3] → Wares/Origin → More[선택지] → Bye)
   - `/Game/Input/` IA_Move, IA_Look, IA_Jump, IA_Interact, IMC_Default (WASD, Mouse2D Y Negate, Space, E)
   - `/Game/UI/WBP_GameHUD`
-  - `/Game/Environment/MerchantCamp/` SM_Camp_* 13종(Ground, CliffWall, Canopy, Tree_A/B, Rock_A/B, Campfire, Tent, LogSeat, Crate, Barrel, Cart) + M_Camp_* 9종, 콜리전 Use Complex As Simple
+  - `/Game/Environment/MerchantCamp/` SM_Camp_* (Ground, CliffWall, Canopy(미사용), SkyDome, Tree_A/B, Rock_A/B, Campfire, PotTripod, Tent, LogSeat, Stump, WoodPile, SackPile, Crate, Barrel, Cart, LanternPost, Bush, MushroomCluster, 폴리지용 GrassClump/GrassTall/Flower) + M_Camp_* 16종, 소품 콜리전 Use Complex As Simple, 풀·버섯은 콜리전 없음
 - 폴더 규칙: `/Game/Blueprints/<분류>/`, `/Game/Characters/<캐릭터>/`, `/Game/Dialogue/`, `/Game/Input/`, `/Game/UI/`, `/Game/Maps/`. 원본 아트는 `SourceArt/`, 개발일지는 `Docs/Devlog/`
 - 네이밍 규칙: BP_, WBP_, ABP_, SK_, SM_, A_(애니메이션), M_, DA_, IA_, IMC_, L_(레벨)
 - 한글 텍스트는 C++에 넣지 않고 BP/데이터 에셋에 넣는다(C++ 기본값은 영어).
@@ -59,7 +59,8 @@
 
 ### 에셋 규칙
 - 스케일/단위: 블렌더 m 단위로 모델링(사람 키 약 1.8m), FBX 익스포트 시 apply_unit_scale → 언리얼 cm
-- 주의: MerchantCamp FBX(apply_unit_scale + FBX_SCALE_UNITS, forward X/up Z)는 언리얼에 1/100 크기로 들어왔다. 다음 정적 메시는 cm 크기가 되게 익스포트 설정을 바꾸고 임포트 바운드를 확인한다
+- 정적 메시 FBX 익스포트 설정(검증됨): `global_scale=1.0, apply_unit_scale=True, apply_scale_options='FBX_SCALE_NONE', axis_forward='X', axis_up='Z', mesh_smooth_type='FACE'` → 언리얼에 cm로 정확히 들어온다. (FBX_SCALE_UNITS는 1/100, global_scale=100까지 주면 ×100.) 처음 13종 SM_Camp_*만 옛 설정이라 액터 스케일 100으로 배치돼 있다
+- MCP로 리임포트(덮어쓰기)가 안 되고, 폴리지 타입 생성·폴리지 인스턴스 추가도 안 된다. 리임포트는 삭제 후 임포트, 폴리지는 사용자가 Foliage 모드로 칠한다
 - 익스포트 경로: `SourceArt/<분류>/<이름>/` (예: `SourceArt/Characters/Merchant/`), `.blend` 원본도 같은 폴더
 - 네이밍 규칙: 메시 `SK_`/`SM_`, 머티리얼 `M_<이름>_<부위>`, Mixamo 결과 `<이름>_Idle.fbx`, `<이름>_Talk_N.fbx`
 
