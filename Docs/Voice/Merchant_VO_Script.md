@@ -11,7 +11,7 @@
 | 2 | `VO_Merchant_Greet.wav` | Greet | 나는 이 길 저 길 떠도는 상인이지. 뭐 궁금한 거라도 있나? | 여유 있게 자기소개, 끝은 묻듯이 올림 |
 | 3 | `VO_Merchant_Wares.wav` | Wares | 등에 멘 이 배낭 안에 별의별 게 다 있지. 아쉽게도 오늘 장사는 끝났지만 말이야. | 앞은 자랑하듯, 뒤는 살짝 아쉬운 웃음 |
 | 4 | `VO_Merchant_Origin.wav` | Origin | 북쪽 산맥 너머에서 왔다네. 길이 험해서 모자가 다 해졌지 뭔가. | 회상하듯 천천히, 끝은 너스레 |
-| 5 | `VO_Merchant_More.wav` | More | 또 궁금한 건 있나? | 가볍고 짧게 |
+| 5 | `VO_Merchant_More.wav` | More | 또 궁금한 거 있나? | 가볍고 짧게 |
 | 6 | `VO_Merchant_Bye.wav` | Bye | 그래, 조심히 가게나. 길에서 또 보세! | 따뜻하게 배웅, 끝은 밝게 |
 
 선택지(플레이어 대사)는 음성 없이 글자로만 둔다.
