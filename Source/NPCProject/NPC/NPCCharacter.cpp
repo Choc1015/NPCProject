@@ -1,11 +1,15 @@
 #include "NPC/NPCCharacter.h"
 #include "Dialogue/DialogueComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/CapsuleComponent.h"
 
 ANPCCharacter::ANPCCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	AutoPossessAI = EAutoPossessAI::Disabled;
+
+	// The Pawn profile ignores Visibility, but the player's interaction trace runs on it.
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 }
 
 void ANPCCharacter::BeginPlay()
