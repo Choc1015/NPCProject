@@ -1,9 +1,3 @@
----
-title: "[NPCProject] NN. 제목"
-tags: ["UnrealEngine", "UE5", "MCP", "Blender", "게임개발"]
-series: "NPCProject 개발일지"
----
-
 ## 이번 목표
 
 - 이번에 만들려고 한 것
@@ -19,7 +13,7 @@ series: "NPCProject 개발일지"
 // 핵심 코드만 짧게
 ```
 
-![스크린샷 설명](./images/NN_screenshot.png)
+![스크린샷 설명](https://media.githubusercontent.com/media/Choc1015/NPCProject/main/Docs/Devlog/images/NN_screenshot.png)
 
 ## 문제와 해결
 

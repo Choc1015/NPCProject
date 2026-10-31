@@ -1,9 +1,3 @@
----
-title: "[NPCProject] 01. 떠돌이 상인과 대화하기 — 1인칭 상호작용 + 선택지 대화"
-tags: ["UnrealEngine", "UE5", "MCP", "Blender", "게임개발"]
-series: "NPCProject 개발일지"
----
-
 ## 이번 목표
 
 - 1인칭으로 돌아다니다가 NPC에게 다가가면 `[E] 대화하기`가 뜨게 한다
@@ -18,7 +12,7 @@ series: "NPCProject 개발일지"
 
 로우폴리 스타일로 만들었다. 챙 넓은 모자, 흰 수염, 녹색 튜닉, 붉은 망토, 그리고 상인답게 **침낭 얹은 큰 배낭**에 냄비랑 랜턴까지 달았다. 삼각형 1,700개 정도.
 
-![Blender로 만든 상인](./images/01_merchant_blender.png)
+![Blender로 만든 상인](https://media.githubusercontent.com/media/Choc1015/NPCProject/main/Docs/Devlog/images/01_merchant_blender.png)
 
 - Mixamo 자동 리깅을 쓰려고 처음부터 **T포즈**로 만들었다
 - 파츠별로 만든 다음 내보낼 때만 하나의 메시로 합쳐서 FBX로 뽑았다
@@ -67,7 +61,7 @@ struct FDialogueNode
 4. 대사마다 `OnDialogueLine(이름, 대사, 선택지들)` → HUD가 대화창을 그린다
 5. 선택지가 있으면 마우스 커서를 보여주고 클릭으로 고른다. 없으면 E로 넘긴다
 
-![상인 앞에서 뜨는 상호작용 안내](./images/01_interact_prompt.png)
+![상인 앞에서 뜨는 상호작용 안내](https://media.githubusercontent.com/media/Choc1015/NPCProject/main/Docs/Devlog/images/01_interact_prompt.png)
 
 ### 5. 대화 모션 섞기 — 루프 → 랜덤 → 몽타주
 
@@ -162,8 +156,3 @@ GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 
 결국 **AI한테 맡기더라도 내가 어느 정도 지식을 갖고 있어야** 더 좋은 결과가 나온다. 어떤 기법이 있는지, 어떤 방향이 맞는지를 내가 알고 있으면 AI한테 정확한 기준을 줄 수 있고, 그만큼 결과물의 질이 올라간다. AI는 내 지식을 대신하는 게 아니라, 내가 아는 걸 더 빠르게 만들어 주는 도구에 가깝다.
 
-## 다음 할 일 (후보)
-
-- [ ] 대사가 한 글자씩 나오는 타이핑 효과
-- [ ] 상인과 거래(상점) 기능
-- [ ] 테스트 맵 꾸미기 (길, 마차, 모닥불 같은 소품)
