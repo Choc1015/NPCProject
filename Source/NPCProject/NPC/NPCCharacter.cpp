@@ -1,5 +1,7 @@
 #include "NPC/NPCCharacter.h"
 #include "Dialogue/DialogueComponent.h"
+#include "Animation/AnimInstance.h"
+#include "Animation/AnimSequenceBase.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 
@@ -12,13 +14,28 @@ ANPCCharacter::ANPCCharacter()
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 }
 
-void ANPCCharacter::BeginPlay()
+void ANPCCharacter::PlayRandomTalkAnimation()
 {
-	Super::BeginPlay();
-
-	if (IdleAnimation)
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	const int32 Count = TalkAnimations.Num();
+	if (!AnimInstance || Count == 0)
 	{
-		GetMesh()->PlayAnimation(IdleAnimation, true);
+		return;
+	}
+
+	// Pick any index except the previous one (when there is more than one to choose from).
+	int32 Index = FMath::RandRange(0, Count - 1);
+	if (Count > 1 && Index == LastTalkIndex)
+	{
+		Index = (Index + FMath::RandRange(1, Count - 1)) % Count;
+	}
+	LastTalkIndex = Index;
+
+	// A new montage in the same slot blends out the one still playing, and a finished
+	// montage blends back to the idle pose feeding the slot.
+	if (UAnimSequenceBase* Animation = TalkAnimations[Index])
+	{
+		AnimInstance->PlaySlotAnimationAsDynamicMontage(Animation, TalkSlotName, TalkBlendInTime, TalkBlendOutTime);
 	}
 }
 
@@ -44,8 +61,16 @@ void ANPCCharacter::Tick(float DeltaSeconds)
 void ANPCCharacter::Interact_Implementation(AActor* Interactor)
 {
 	UDialogueComponent* DialogueComponent = Interactor ? Interactor->FindComponentByClass<UDialogueComponent>() : nullptr;
-	if (!DialogueComponent || !DialogueComponent->StartDialogue(Dialogue, this, DisplayName))
+	if (!DialogueComponent)
 	{
+		return;
+	}
+
+	// Bind before starting: StartDialogue broadcasts the first line immediately.
+	BindToDialogue(DialogueComponent);
+	if (!DialogueComponent->StartDialogue(Dialogue, this, DisplayName))
+	{
+		UnbindFromDialogue();
 		return;
 	}
 
@@ -53,6 +78,34 @@ void ANPCCharacter::Interact_Implementation(AActor* Interactor)
 	{
 		TargetYaw = (Interactor->GetActorLocation() - GetActorLocation()).Rotation().Yaw;
 	}
+}
+
+void ANPCCharacter::BindToDialogue(UDialogueComponent* DialogueComponent)
+{
+	ActiveDialogue = DialogueComponent;
+	DialogueComponent->OnDialogueLine.AddDynamic(this, &ThisClass::HandleDialogueLine);
+	DialogueComponent->OnDialogueEnded.AddDynamic(this, &ThisClass::HandleDialogueEnded);
+}
+
+void ANPCCharacter::UnbindFromDialogue()
+{
+	if (UDialogueComponent* DialogueComponent = ActiveDialogue.Get())
+	{
+		DialogueComponent->OnDialogueLine.RemoveDynamic(this, &ThisClass::HandleDialogueLine);
+		DialogueComponent->OnDialogueEnded.RemoveDynamic(this, &ThisClass::HandleDialogueEnded);
+	}
+	ActiveDialogue.Reset();
+}
+
+void ANPCCharacter::HandleDialogueLine(FText SpeakerName, FText Text, const TArray<FText>& Choices)
+{
+	PlayRandomTalkAnimation();
+}
+
+void ANPCCharacter::HandleDialogueEnded()
+{
+	// The current talk animation finishes on its own and blends back to idle.
+	UnbindFromDialogue();
 }
 
 FText ANPCCharacter::GetInteractionPrompt_Implementation() const

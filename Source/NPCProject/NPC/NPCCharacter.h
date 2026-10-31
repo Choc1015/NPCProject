@@ -6,9 +6,14 @@
 #include "NPCCharacter.generated.h"
 
 class UDialogueData;
-class UAnimationAsset;
+class UAnimSequenceBase;
+class UDialogueComponent;
 
-/** A talkable NPC. Looks, name, dialogue and idle animation are set up in a Blueprint subclass. */
+/**
+ * A talkable NPC. Looks, name, dialogue and animations are set up in a Blueprint subclass.
+ * Idle lives in the mesh's Anim Blueprint; talk animations play on top of it as montages
+ * through the Anim Blueprint's slot, so idle <-> talk and talk <-> talk blend smoothly.
+ */
 UCLASS()
 class NPCPROJECT_API ANPCCharacter : public ACharacter, public IInteractable
 {
@@ -17,7 +22,6 @@ class NPCPROJECT_API ANPCCharacter : public ACharacter, public IInteractable
 public:
 	ANPCCharacter();
 
-	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
 	// IInteractable
@@ -35,14 +39,38 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NPC")
 	TObjectPtr<UDialogueData> Dialogue;
 
-	/** Looping animation played on the mesh (no Anim Blueprint needed). */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NPC")
-	TObjectPtr<UAnimationAsset> IdleAnimation;
+	/** One of these plays once on every dialogue line, never the same one twice in a row. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NPC|Animation")
+	TArray<TObjectPtr<UAnimSequenceBase>> TalkAnimations;
+
+	/** Anim Blueprint slot the talk montages play in. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NPC|Animation")
+	FName TalkSlotName = TEXT("DefaultSlot");
+
+	/** Blend time into a talk animation (from idle or from the previous talk animation). */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NPC|Animation")
+	float TalkBlendInTime = 0.25f;
+
+	/** Blend time from a finished talk animation back to idle. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NPC|Animation")
+	float TalkBlendOutTime = 0.4f;
 
 	/** Degrees per second the NPC turns to face whoever talks to it. 0 disables turning. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NPC")
 	float TurnToFaceSpeed = 360.f;
 
 private:
+	void PlayRandomTalkAnimation();
+	void BindToDialogue(UDialogueComponent* DialogueComponent);
+	void UnbindFromDialogue();
+
+	UFUNCTION()
+	void HandleDialogueLine(FText SpeakerName, FText Text, const TArray<FText>& Choices);
+
+	UFUNCTION()
+	void HandleDialogueEnded();
+
 	TOptional<float> TargetYaw;
+	TWeakObjectPtr<UDialogueComponent> ActiveDialogue;
+	int32 LastTalkIndex = INDEX_NONE;
 };
