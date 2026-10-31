@@ -43,7 +43,8 @@
   - `/Game/Blueprints/Player/` BP_PlayerCharacter, BP_PlayerController
   - `/Game/Blueprints/NPC/BP_NPC_Merchant` (DisplayName "떠돌이 상인", Dialogue, ABP_Merchant, TalkAnimations 3개, TalkBlendIn/OutTime)
   - `/Game/Characters/Merchant/` SK_Merchant, SK_Merchant_Skeleton, ABP_Merchant(Idle 루프 → Slot DefaultSlot), A_Merchant_Idle, A_Merchant_Talk_1~3, M_Merchant_*
-  - `/Game/Dialogue/DA_Dialogue_Merchant` (Start → Greet[선택지 3] → Wares/Origin → More[선택지] → Bye)
+  - `/Game/Dialogue/DA_Dialogue_Merchant` (Start → Greet[선택지 3] → Wares/Origin → More[선택지] → Bye). 노드마다 `Voice`(USoundBase) 칸, NPC의 `VoiceAudio` 컴포넌트가 재생
+  - `/Game/Audio/Merchant/` VO_Merchant_<NodeId> (ElevenLabs, 원본 `SourceArt/Audio/Merchant/`, 대본 `Docs/Voice/Merchant_VO_Script.md`). 사운드 임포트는 MCP 툴이 없어 사용자가 드래그
   - `/Game/Input/` IA_Move, IA_Look, IA_Jump, IA_Interact, IMC_Default (WASD, Mouse2D Y Negate, Space, E)
   - `/Game/UI/WBP_GameHUD`
   - `/Game/Environment/MerchantCamp/` SM_Camp_* (Ground, CliffWall·Canopy(미사용), ForestWall, SkyDome, Tree_A~E, Fern, Rock_A/B, Campfire, PotTripod, Tent, LogSeat, Stump, WoodPile, SackPile, Crate, Barrel, Cart, LanternPost, Bush, MushroomCluster, 폴리지용 GrassClump/GrassTall/Flower) + M_Camp_* 16종, 소품 콜리전 Use Complex As Simple, 풀·버섯은 콜리전 없음
