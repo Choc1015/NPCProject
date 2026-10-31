@@ -29,7 +29,7 @@
 ### 프로젝트 구조
 - 엔진: UE 5.8 런처 빌드 (`C:\Program Files\Epic Games\UE_5.8`). MCP 서버 `unreal` = `http://127.0.0.1:8010/mcp`, 에디터 시작 시 자동 시작(`Config/DefaultEditorPerProjectUserSettings.ini`)
 - 빌드: 헤더가 바뀌면 에디터를 닫고 `Engine\Build\BatchFiles\Build.bat NPCProjectEditor Win64 Development -Project="<uproject>" -WaitMutex -NoHotReload`
-- 주요 레벨: `/Game/Maps/L_MerchantCamp` (기본 맵). 닫힌 상자형 숲속 야영지 20m×20m(벽 안쪽 x,y=±1000, 천장은 밤하늘 돔 SM_Camp_SkyDome (0,0,550), 별은 M_Camp_Star 발광). 랜턴 기둥 (480,260) + PointLight. PlayerStart (-700,0,100) yaw 0, 상인 (320,160,96) yaw 180, 모닥불 (100,0,0) + PointLight, PostProcess 노출 EV100 0 고정. 메시 액터는 스케일 100(아래 FBX 주의)
+- 주요 레벨: `/Game/Maps/L_MerchantCamp` (기본 맵). 닫힌 상자형 숲속 야영지 20m×20m(벽 안쪽 x,y=±1000, 천장은 밤하늘 돔 SM_Camp_SkyDome (0,0,550), 별은 M_Camp_Star 발광). 랜턴 기둥 (480,260) + PointLight. 벽은 SM_Camp_ForestWall 8개(스케일 1, 안쪽 면 ±1000, 깊이 바깥 ~1351) + 벽 앞 나무 19그루·고사리 30개(Camp_Forest_*). 풀은 사용자가 칠한 폴리지. PlayerStart (-700,0,100) yaw 0, 상인 (320,160,96) yaw 180, 모닥불 (100,0,0) + PointLight, PostProcess 노출 EV100 0 고정. 메시 액터는 스케일 100(아래 FBX 주의)
   - `/Game/Maps/L_TestField`: 처음 테스트 맵 (Template_Default 복제)
 - 게임모드: `/Game/Blueprints/Game/BP_NPCGameMode` (Pawn `BP_PlayerCharacter`, Controller `BP_PlayerController`)
 - C++ (`Source/NPCProject/`, 모듈 루트 기준 include)
@@ -46,7 +46,7 @@
   - `/Game/Dialogue/DA_Dialogue_Merchant` (Start → Greet[선택지 3] → Wares/Origin → More[선택지] → Bye)
   - `/Game/Input/` IA_Move, IA_Look, IA_Jump, IA_Interact, IMC_Default (WASD, Mouse2D Y Negate, Space, E)
   - `/Game/UI/WBP_GameHUD`
-  - `/Game/Environment/MerchantCamp/` SM_Camp_* (Ground, CliffWall, Canopy(미사용), SkyDome, Tree_A/B, Rock_A/B, Campfire, PotTripod, Tent, LogSeat, Stump, WoodPile, SackPile, Crate, Barrel, Cart, LanternPost, Bush, MushroomCluster, 폴리지용 GrassClump/GrassTall/Flower) + M_Camp_* 16종, 소품 콜리전 Use Complex As Simple, 풀·버섯은 콜리전 없음
+  - `/Game/Environment/MerchantCamp/` SM_Camp_* (Ground, CliffWall·Canopy(미사용), ForestWall, SkyDome, Tree_A~E, Fern, Rock_A/B, Campfire, PotTripod, Tent, LogSeat, Stump, WoodPile, SackPile, Crate, Barrel, Cart, LanternPost, Bush, MushroomCluster, 폴리지용 GrassClump/GrassTall/Flower) + M_Camp_* 16종, 소품 콜리전 Use Complex As Simple, 풀·버섯은 콜리전 없음
 - 폴더 규칙: `/Game/Blueprints/<분류>/`, `/Game/Characters/<캐릭터>/`, `/Game/Dialogue/`, `/Game/Input/`, `/Game/UI/`, `/Game/Maps/`. 원본 아트는 `SourceArt/`, 개발일지는 `Docs/Devlog/`
 - 네이밍 규칙: BP_, WBP_, ABP_, SK_, SM_, A_(애니메이션), M_, DA_, IA_, IMC_, L_(레벨)
 - 한글 텍스트는 C++에 넣지 않고 BP/데이터 에셋에 넣는다(C++ 기본값은 영어).
