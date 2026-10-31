@@ -1,0 +1,46 @@
+# Unreal generated folders
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+Build/
+.vs/
+.idea/
+.vscode/
+
+# Plugin generated folders
+Plugins/**/Binaries/
+Plugins/**/Intermediate/
+
+# IDE / solution files (regenerated from .uproject)
+*.sln
+*.slnx
+*.suo
+*.opensdf
+*.sdf
+*.VC.db
+*.VC.opendb
+*.xcodeproj
+*.xcworkspace
+
+# Compiled / debug artifacts
+*.pdb
+*.obj
+*.dll
+*.exe
+*.lib
+*.exp
+*.ilk
+
+# Blender backups
+*.blend1
+*.blend2
+
+# OS
+Thumbs.db
+.DS_Store
+Desktop.ini
+
+# Local MCP / Claude config
+.mcp.json
+.claude/settings.local.json
