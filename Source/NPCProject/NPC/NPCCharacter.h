@@ -8,6 +8,7 @@
 class UDialogueData;
 class UAnimSequenceBase;
 class UDialogueComponent;
+class UAudioComponent;
 
 /**
  * A talkable NPC. Looks, name, dialogue and animations are set up in a Blueprint subclass.
@@ -55,12 +56,22 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NPC|Animation")
 	float TalkBlendOutTime = 0.4f;
 
+	/** Plays each dialogue line's voice-over from the NPC's head. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "NPC|Voice")
+	TObjectPtr<UAudioComponent> VoiceAudio;
+
+	/** Fade-out when the conversation ends (or moves to a line without voice) mid voice line. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NPC|Voice")
+	float VoiceFadeOutTime = 0.15f;
+
 	/** Degrees per second the NPC turns to face whoever talks to it. 0 disables turning. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "NPC")
 	float TurnToFaceSpeed = 360.f;
 
 private:
 	void PlayRandomTalkAnimation();
+	void PlayVoice(USoundBase* Voice);
+	void StopVoice();
 	void BindToDialogue(UDialogueComponent* DialogueComponent);
 	void UnbindFromDialogue();
 

@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "Sound/SoundBase.h"
 #include "DialogueData.generated.h"
 
 /** A reply the player can pick. NextNodeId = None ends the conversation. */
@@ -28,6 +29,10 @@ struct FDialogueNode
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Dialogue", meta = (MultiLine = true))
 	FText Text;
+
+	/** Optional voice-over the speaker plays when this line is shown. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Dialogue")
+	TObjectPtr<USoundBase> Voice;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Dialogue")
 	TArray<FDialogueChoice> Choices;

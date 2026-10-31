@@ -22,6 +22,11 @@ bool UDialogueComponent::IsWaitingForChoice() const
 	return CurrentNode && CurrentNode->Choices.Num() > 0;
 }
 
+USoundBase* UDialogueComponent::GetCurrentVoice() const
+{
+	return CurrentNode ? CurrentNode->Voice.Get() : nullptr;
+}
+
 void UDialogueComponent::Continue()
 {
 	if (CurrentNode && !IsWaitingForChoice())

@@ -5,6 +5,7 @@
 #include "DialogueComponent.generated.h"
 
 class UDialogueData;
+class USoundBase;
 struct FDialogueNode;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnDialogueLine, FText, SpeakerName, FText, Text, const TArray<FText>&, Choices);
@@ -36,6 +37,10 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Dialogue")
 	bool IsWaitingForChoice() const;
+
+	/** Voice-over of the line currently shown, if it has one. */
+	UFUNCTION(BlueprintPure, Category = "Dialogue")
+	USoundBase* GetCurrentVoice() const;
 
 	UPROPERTY(BlueprintAssignable, Category = "Dialogue")
 	FOnDialogueStarted OnDialogueStarted;

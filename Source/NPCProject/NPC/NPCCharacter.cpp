@@ -4,6 +4,8 @@
 #include "Animation/AnimSequenceBase.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundBase.h"
 
 ANPCCharacter::ANPCCharacter()
 {
@@ -12,6 +14,37 @@ ANPCCharacter::ANPCCharacter()
 
 	// The Pawn profile ignores Visibility, but the player's interaction trace runs on it.
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+
+	VoiceAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("VoiceAudio"));
+	VoiceAudio->SetupAttachment(GetCapsuleComponent());
+	VoiceAudio->SetRelativeLocation(FVector(0.f, 0.f, 70.f));
+	VoiceAudio->bAutoActivate = false;
+	// Heard from the NPC's position: full volume up close, fading out across the camp.
+	VoiceAudio->bOverrideAttenuation = true;
+	VoiceAudio->AttenuationOverrides.bAttenuate = true;
+	VoiceAudio->AttenuationOverrides.bSpatialize = true;
+	VoiceAudio->AttenuationOverrides.AttenuationShapeExtents = FVector(400.f);
+	VoiceAudio->AttenuationOverrides.FalloffDistance = 1600.f;
+}
+
+void ANPCCharacter::PlayVoice(USoundBase* Voice)
+{
+	if (!Voice)
+	{
+		StopVoice();
+		return;
+	}
+	// SetSound cuts off whatever line is still playing.
+	VoiceAudio->SetSound(Voice);
+	VoiceAudio->Play();
+}
+
+void ANPCCharacter::StopVoice()
+{
+	if (VoiceAudio->IsPlaying())
+	{
+		VoiceAudio->FadeOut(VoiceFadeOutTime, 0.f);
+	}
 }
 
 void ANPCCharacter::PlayRandomTalkAnimation()
@@ -100,11 +133,15 @@ void ANPCCharacter::UnbindFromDialogue()
 void ANPCCharacter::HandleDialogueLine(FText SpeakerName, FText Text, const TArray<FText>& Choices)
 {
 	PlayRandomTalkAnimation();
+
+	const UDialogueComponent* DialogueComponent = ActiveDialogue.Get();
+	PlayVoice(DialogueComponent ? DialogueComponent->GetCurrentVoice() : nullptr);
 }
 
 void ANPCCharacter::HandleDialogueEnded()
 {
 	// The current talk animation finishes on its own and blends back to idle.
+	StopVoice();
 	UnbindFromDialogue();
 }
 
