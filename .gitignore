@@ -44,3 +44,7 @@ Desktop.ini
 # Local MCP / Claude config
 .mcp.json
 .claude/settings.local.json
+
+# Redundant Tripo/Blender byproducts (texture is packed in the .blend and FBXs)
+SourceArt/Characters/Merchant_Anime/tripo_raw/
+SourceArt/**/*.fbm/

@@ -41,8 +41,9 @@
   - `Game/` `ANPCGameMode`
 - 블루프린트/에셋
   - `/Game/Blueprints/Player/` BP_PlayerCharacter, BP_PlayerController
-  - `/Game/Blueprints/NPC/BP_NPC_Merchant` (DisplayName "떠돌이 상인", Dialogue, ABP_Merchant, TalkAnimations 3개, TalkBlendIn/OutTime)
-  - `/Game/Characters/Merchant/` SK_Merchant, SK_Merchant_Skeleton, ABP_Merchant(Idle 루프 → Slot DefaultSlot), A_Merchant_Idle, A_Merchant_Talk_1~3, M_Merchant_*
+  - `/Game/Blueprints/NPC/BP_NPC_Merchant` (DisplayName "떠돌이 상인", Dialogue, SK_MerchantAnime + ABP_MerchantAnime, TalkAnimations 3개, TalkBlendIn/OutTime). 맵에 놓인 인스턴스에도 메시/AnimClass/TalkAnimations를 직접 설정해 둠(CDO 변경이 전파 안 됨)
+  - `/Game/Characters/MerchantAnime/` (현재 사용) 트리포 H3.1로 뽑은 애니풍 상인: SK_MerchantAnime(175cm, Mixamo 뼈 65개·손가락 포함), SK_MerchantAnime_Skeleton, ABP_MerchantAnime(Idle 루프 → Slot DefaultSlot), A_MerchantAnime_Idle, A_MerchantAnime_Talk_1~3, M_MerchantAnime_Body, T_MerchantAnime_BaseColor. 원본 `SourceArt/Characters/Merchant_Anime/` (Merchant_Anime.blend, _ForMixamo.fbx, Mixamo FBX). 배낭·셀 셰이딩은 아직 없음
+  - `/Game/Characters/Merchant/` (예전 로우폴리, 미사용) SK_Merchant, SK_Merchant_Skeleton, ABP_Merchant, A_Merchant_Idle, A_Merchant_Talk_1~3, M_Merchant_*
   - `/Game/Dialogue/DA_Dialogue_Merchant` (Start → Greet[선택지 3] → Wares/Origin → More[선택지] → Bye). 노드마다 `Voice`(USoundBase) 칸, NPC의 `VoiceAudio` 컴포넌트가 재생
   - `/Game/Audio/Merchant/` VO_Merchant_<NodeId> (ElevenLabs, 원본 `SourceArt/Audio/Merchant/`, 대본 `Docs/Voice/Merchant_VO_Script.md`). 사운드 임포트는 MCP 툴이 없어 사용자가 드래그
   - `/Game/Input/` IA_Move, IA_Look, IA_Jump, IA_Interact, IMC_Default (WASD, Mouse2D Y Negate, Space, E)
