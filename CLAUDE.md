@@ -48,6 +48,7 @@
   - `/Game/Audio/Merchant/` VO_Merchant_<NodeId> (ElevenLabs, 원본 `SourceArt/Audio/Merchant/`, 대본 `Docs/Voice/Merchant_VO_Script.md`). 사운드 임포트는 MCP 툴이 없어 사용자가 드래그
   - `/Game/Input/` IA_Move, IA_Look, IA_Jump, IA_Interact, IMC_Default (WASD, Mouse2D Y Negate, Space, E)
   - `/Game/UI/WBP_GameHUD`
+  - `/Game/Environment/MerchantCampTripo/` 트리포 소품(스마트 메시, Gemini 레퍼런스, 반실사): SM_CampT_Tent·Campfire·PotTripod·Cart·LogSeat + M_CampT_*(거칠기 0.85, 반사 0)·T_CampT_*_BaseColor, 콜리전 Use Complex As Simple, 스케일 1. 맵의 CampT_* 액터로 예전 Camp_Tent/Campfire/PotTripod/Cart/LogSeat를 대체함(위치는 사용자가 조정). 원본 `SourceArt/Environment/MerchantCampTripo/<Name>/`. 남은 것: 2차(통·상자·자루·장작·그루터기·랜턴 기둥), 3차(바위·나무·덤불)
   - `/Game/Environment/MerchantCamp/` SM_Camp_* (Ground, CliffWall·Canopy(미사용), ForestWall, SkyDome, Tree_A~E, Fern, Rock_A/B, Campfire, PotTripod, Tent, LogSeat, Stump, WoodPile, SackPile, Crate, Barrel, Cart, LanternPost, Bush, MushroomCluster, 폴리지용 GrassClump/GrassTall/Flower) + M_Camp_* 16종, 소품 콜리전 Use Complex As Simple, 풀·버섯은 콜리전 없음
 - 폴더 규칙: `/Game/Blueprints/<분류>/`, `/Game/Characters/<캐릭터>/`, `/Game/Dialogue/`, `/Game/Input/`, `/Game/UI/`, `/Game/Maps/`. 원본 아트는 `SourceArt/`, 개발일지는 `Docs/Devlog/`
 - 네이밍 규칙: BP_, WBP_, ABP_, SK_, SM_, A_(애니메이션), M_, DA_, IA_, IMC_, L_(레벨)
