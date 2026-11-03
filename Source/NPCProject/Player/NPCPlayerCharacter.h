@@ -9,6 +9,7 @@ class UInputAction;
 class UInputMappingContext;
 class UInteractionComponent;
 class UDialogueComponent;
+class USoundBase;
 struct FInputActionValue;
 
 /** First-person player: camera only, walks around and talks to NPCs. */
@@ -22,6 +23,8 @@ public:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void PawnClientRestart() override;
+	virtual void Tick(float DeltaSeconds) override;
+	virtual void Landed(const FHitResult& Hit) override;
 
 	UCameraComponent* GetFirstPersonCamera() const { return FirstPersonCamera; }
 	UInteractionComponent* GetInteractionComponent() const { return InteractionComponent; }
@@ -54,7 +57,24 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> InteractAction;
 
+	/** One of these plays (never the same twice in a row) every FootstepStride of ground travel. */
+	UPROPERTY(EditAnywhere, Category = "Audio|Footsteps")
+	TArray<TObjectPtr<USoundBase>> FootstepSounds;
+
+	/** Ground distance (cm) between two footsteps. */
+	UPROPERTY(EditAnywhere, Category = "Audio|Footsteps", meta = (ClampMin = "10"))
+	float FootstepStride = 170.f;
+
+	UPROPERTY(EditAnywhere, Category = "Audio|Footsteps", meta = (ClampMin = "0"))
+	float FootstepVolume = 0.6f;
+
+	/** Random pitch range per step so repeats don't sound mechanical. */
+	UPROPERTY(EditAnywhere, Category = "Audio|Footsteps")
+	FVector2D FootstepPitchRange = FVector2D(0.9f, 1.1f);
+
 private:
+	void PlayFootstep();
+
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void OnInteractPressed();
@@ -65,4 +85,7 @@ private:
 
 	UFUNCTION()
 	void HandleDialogueEnded();
+
+	float FootstepDistance = 0.f;
+	int32 LastFootstepIndex = INDEX_NONE;
 };

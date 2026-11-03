@@ -8,6 +8,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "GameFramework/PlayerController.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundBase.h"
 
 ANPCPlayerCharacter::ANPCPlayerCharacter()
 {
@@ -22,6 +24,58 @@ ANPCPlayerCharacter::ANPCPlayerCharacter()
 	DialogueComponent = CreateDefaultSubobject<UDialogueComponent>(TEXT("DialogueComponent"));
 
 	BaseEyeHeight = 70.f;
+
+	PrimaryActorTick.bCanEverTick = true;
+}
+
+void ANPCPlayerCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	const float Speed = GetVelocity().Size2D();
+	if (FootstepSounds.IsEmpty() || !GetCharacterMovement()->IsMovingOnGround() || Speed < 10.f)
+	{
+		// Standing still: the first step after starting to walk comes after half a stride.
+		FootstepDistance = FootstepStride * 0.5f;
+		return;
+	}
+
+	FootstepDistance += Speed * DeltaSeconds;
+	if (FootstepDistance >= FootstepStride)
+	{
+		FootstepDistance -= FootstepStride;
+		PlayFootstep();
+	}
+}
+
+void ANPCPlayerCharacter::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+
+	PlayFootstep();
+	FootstepDistance = 0.f;
+}
+
+void ANPCPlayerCharacter::PlayFootstep()
+{
+	if (FootstepSounds.IsEmpty())
+	{
+		return;
+	}
+
+	int32 Index = FMath::RandRange(0, FootstepSounds.Num() - 1);
+	if (FootstepSounds.Num() > 1 && Index == LastFootstepIndex)
+	{
+		Index = (Index + 1) % FootstepSounds.Num();
+	}
+	LastFootstepIndex = Index;
+
+	if (USoundBase* Sound = FootstepSounds[Index])
+	{
+		const FVector Feet = GetActorLocation() - FVector(0.f, 0.f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+		const float Pitch = FMath::FRandRange(FootstepPitchRange.X, FootstepPitchRange.Y);
+		UGameplayStatics::PlaySoundAtLocation(this, Sound, Feet, FootstepVolume, Pitch);
+	}
 }
 
 void ANPCPlayerCharacter::BeginPlay()
