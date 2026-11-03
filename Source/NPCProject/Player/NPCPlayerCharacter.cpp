@@ -32,41 +32,6 @@ void ANPCPlayerCharacter::BeginPlay()
 	DialogueComponent->OnDialogueEnded.AddDynamic(this, &ThisClass::HandleDialogueEnded);
 }
 
-void ANPCPlayerCharacter::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-
-	UpdateIdleSway(DeltaSeconds);
-}
-
-void ANPCPlayerCharacter::UpdateIdleSway(float DeltaSeconds)
-{
-	const bool bStandingStill = bEnableIdleSway
-		&& !GetCharacterMovement()->IsFalling()
-		&& GetVelocity().Size2D() < IdleSwaySpeedThreshold;
-	IdleSwayWeight = FMath::FInterpTo(IdleSwayWeight, bStandingStill ? 1.f : 0.f, DeltaSeconds, IdleSwayBlendSpeed);
-
-	FirstPersonCamera->ClearAdditiveOffset();
-	if (IdleSwayWeight <= KINDA_SMALL_NUMBER)
-	{
-		return;
-	}
-
-	IdleSwayTime += DeltaSeconds;
-	const float Phase = IdleSwayTime * UE_TWO_PI / IdleSwayPeriod;
-
-	const FVector Offset(
-		0.f,
-		FMath::Sin(Phase * 0.5f) * IdleSwayWidth,
-		FMath::Sin(Phase) * IdleSwayHeight);
-	const FRotator Tilt(
-		FMath::Sin(Phase + 0.6f) * IdleSwayPitchDegrees,
-		0.f,
-		FMath::Sin(Phase * 0.5f + 1.f) * IdleSwayRollDegrees);
-
-	FirstPersonCamera->AddAdditiveOffset(FTransform(Tilt * IdleSwayWeight, Offset * IdleSwayWeight), 0.f);
-}
-
 void ANPCPlayerCharacter::PawnClientRestart()
 {
 	Super::PawnClientRestart();
